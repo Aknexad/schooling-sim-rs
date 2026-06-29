@@ -1,9 +1,21 @@
 use macroquad::prelude::*;
 
-#[macroquad::main("MyGame")]
+mod fish;
+mod window_conf;
+
+use window_conf::default;
+#[macroquad::main(default())]
 async fn main() {
+    let mut f = fish::Fish {
+        position: [150.0, 200.1],
+        velocity: 300.5,
+    };
+
     loop {
-        clear_background(DARKBLUE);
+        clear_background(BLACK);
+
+        f.update();
+        f.draw();
 
         next_frame().await
     }
