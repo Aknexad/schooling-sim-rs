@@ -6,16 +6,15 @@ mod window_conf;
 use window_conf::default;
 #[macroquad::main(default())]
 async fn main() {
-    let mut f = fish::Fish {
-        position: [150.0, 200.1],
-        velocity: 300.5,
-    };
+    let mut flock = fish::Fish::flock(100);
 
     loop {
         clear_background(BLACK);
 
-        f.update();
-        f.draw();
+        for fish in flock.iter_mut() {
+            fish.draw();
+            fish.update();
+        }
 
         next_frame().await
     }
