@@ -1,5 +1,3 @@
-use std::{intrinsics::sqrtf32, vec};
-
 use macroquad::prelude::*;
 
 use crate::window_conf;
@@ -15,13 +13,6 @@ impl Fish {
         let original_x = self.position[0];
         let original_y = self.position[1];
 
-        // for _ in 1..50 {
-        //     let x = original_x + 10 as f32;
-        //     original_x = x;
-        //     let y = original_y + 10 as f32;
-        //     original_y = y;
-
-        // }
         draw_poly(original_x, original_y, 3, 5.1, 0.0, BLUE);
     }
 
@@ -62,28 +53,47 @@ impl Fish {
         }
     }
 
-    pub fn flock(fish_count: i32) -> Vec<Fish> {
+    pub fn flock(fish_count: usize) -> Vec<Fish> {
         let center_x = screen_width() / 2.0;
         let center_y = screen_height() / 2.0;
 
         let mut flock: Vec<Fish> = Vec::new();
 
-        for _ in 0..fish_count {
+        while flock.len() < fish_count {
             let angle = rand::gen_range(0.0, 2.0 * std::f32::consts::PI);
-            let radius = rand::gen_range(0.0, 100.0);
+            let radius: f32 = fish_count as f32 * rand::gen_range::<f32>(0.0, 1.0).sqrt();
 
             let x = center_x + radius * angle.cos();
             let y = center_y + radius * angle.sin();
+            let collisions = eliminate_collisions(&mut flock, x, y);
 
-            let fish = Fish {
-                position: [x, y],
-                velocity: 300.0,
-            };
-            flock.push(fish);
+            if !collisions {
+                flock.push(Fish {
+                    position: [x, y],
+                    velocity: 300.0,
+                });
+            }
         }
 
         flock
     }
+}
+
+fn eliminate_collisions(flock: &mut Vec<Fish>, new_fish_x: f32, new_fish_y: f32) -> bool {
+    let mut collisions: bool = false;
+    let min_distance = 7.7;
+    for fish in flock {
+        let dx = fish.position[0] - new_fish_x;
+        let dy = fish.position[1] - new_fish_y;
+        let dist = (dx * dx) + (dy * dy);
+
+        if dist < min_distance {
+            collisions = true;
+            break;
+        }
+    }
+
+    collisions
 }
 
 // let mouse_position = mouse_position();

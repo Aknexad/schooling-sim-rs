@@ -19,3 +19,5 @@ async fn main() {
         next_frame().await
     }
 }
+
+// [321.292, 260.0], velocity: 300.0 }, Fish { position: [317.6466, 221.76599], velocity: 300.0 }, Fish { position: [179.93251, 239.96516], velocity: 300.0 },
