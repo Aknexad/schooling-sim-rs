@@ -1,5 +1,6 @@
 use macroquad::prelude::*;
 
+mod boid_rules;
 mod fish;
 mod window_conf;
 
@@ -11,9 +12,10 @@ async fn main() {
     loop {
         clear_background(BLACK);
 
+        fish::update_flock(&mut flock, 50.0, 25.0);
+
         for fish in flock.iter_mut() {
             fish.draw();
-            fish.update();
         }
 
         next_frame().await
